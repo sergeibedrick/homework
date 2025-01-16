@@ -2,7 +2,7 @@ from aiogram import Bot, Dispatcher, Router, types
 from aiogram.filters import CommandStart
 
 # Введите токен телеграмм бота
-TOKEN = "7684124938:AAG9CW3TC3oud8N3_T8RCV6RtSBzPhn313Q"  # Замените на ваш токен
+TOKEN = "ваш токен"  # Замените на ваш токен
 
 # Инициализация бота и диспетчера
 bot = Bot(token=TOKEN)
