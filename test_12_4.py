@@ -1,6 +1,14 @@
 import unittest
 import logging
 
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    filename='runner_tests.log',
+    filemode='w',
+    encoding='utf-8',
+    format='%(levelname)s: %(message)s'
+)
 
 class Runner:
     def __init__(self, name, speed=5):
@@ -52,31 +60,49 @@ class Tournament:
         return finishers
 
 
-logging.basicConfig(level=logging.INFO,
-                    filename='runner_tests.log',
-                    filemode='w',
-                    encoding='utf-8',
-                    format='%(levelname)s: %(message)s')
-
 class RunnerTest(unittest.TestCase):
+    is_frozen = False  # Атрибут для управления заморозкой
+
     def test_walk(self):
+        """Проверяет метод walk с обработкой исключения."""
         try:
-            runner = Runner("Алексей", -5)  # Передаем отрицательное
-            # значение скорости
-            runner.walk()
-            logging.info('"test_walk" выполнен успешно')
-        except ValueError as e:
+            runner = Runner("Walker", -1)  # Передаем отрицательное значение
+        except ValueError:
             logging.warning("Неверная скорость для Runner")
-            self.fail(f"Тест не пройден: {str(e)}")
+        else:
+            for _ in range(10):
+                runner.walk()
+            self.assertEqual(runner.distance, 50)
+            logging.info('"test_walk" выполнен успешно')
 
     def test_run(self):
+        """Проверяет метод run с обработкой исключения."""
         try:
-            runner = Runner(123)  # Передаем число вместо строки в name
-            runner.run()
-            logging.info('"test_run" выполнен успешно')
-        except TypeError as e:
+            runner = Runner(123, 5)  # Передаем что-то кроме строки
+        except TypeError:
             logging.warning("Неверный тип данных для объекта Runner")
-            self.fail(f"Тест не пройден: {str(e)}")
+        else:
+            for _ in range(10):
+                runner.run()
+            self.assertEqual(runner.distance, 100)
+            logging.info('"test_run" выполнен успешно')
+
+    def test_challenge(self):
+        """Проверяет методы run и walk с разными объектами."""
+        runner1 = Runner("Runner1")
+        runner2 = Runner("Runner2")
+        for _ in range(10):
+            runner1.run()
+            runner2.walk()
+        self.assertNotEqual(runner1.distance, runner2.distance)
 
 if __name__ == '__main__':
     unittest.main()
+
+
+first = Runner('Вося', 10)
+second = Runner('Илья', 5)
+# third = Runner('Арсен', 10)
+
+t = Tournament(101, first, second)
+print(t.start())
